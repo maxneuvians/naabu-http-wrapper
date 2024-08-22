@@ -3,20 +3,18 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/projectdiscovery/goflags"
-	"github.com/projectdiscovery/naabu/v2/pkg/port"
 	"github.com/projectdiscovery/naabu/v2/pkg/result"
 	"github.com/projectdiscovery/naabu/v2/pkg/runner"
 )
 
 type ScanResult struct {
 	Host  string
-	Ports []*port.Port
+	Ports []int
 }
 
 func scanHandler(w http.ResponseWriter, r *http.Request) {
@@ -24,23 +22,28 @@ func scanHandler(w http.ResponseWriter, r *http.Request) {
 	host := r.URL.Query().Get("host")
 	ports := r.URL.Query().Get("ports")
 
-	fmt.Println("Scanning host: ", host, " with ports: ", ports)
-
 	options := runner.Options{
 		Host:     goflags.StringSlice{host},
 		ScanType: "s",
 		Timeout:  1000,
 		OnResult: func(hr *result.HostResult) {
+
+			portNumbers := make([]int, 0)
+
+			for _, p := range hr.Ports {
+				portNumbers = append(portNumbers, p.Port)
+			}
+
 			// Convert the result to a JSON object
 			scanResult := ScanResult{
 				Host:  hr.Host,
-				Ports: hr.Ports,
+				Ports: portNumbers,
 			}
 
 			jsonResult, err := json.Marshal(scanResult)
 			if err != nil {
-				log.Fatal(err)
 				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("Error converting result to JSON"))
 				return
 			}
 
