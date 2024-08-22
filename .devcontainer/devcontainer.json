@@ -9,6 +9,9 @@
 	},
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+        	"packages": "libpcap-dev"
+    	}
 	},
 	"extensions": [
 		"redhat.vscode-yaml",
