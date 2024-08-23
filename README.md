@@ -27,3 +27,9 @@ make run
 curl 'http://127.0.0.1:8080/?host=scanme.sh&ports=80,443'
 ```
 
+## Building binary locally
+
+Build your local binary like any other Golang binary, however, Naabu requires that you have `libpcap-devel` installed on your system.
+
+## License
+MIT 2024
