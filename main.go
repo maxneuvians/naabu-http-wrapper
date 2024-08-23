@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/naabu/v2/pkg/result"
@@ -14,8 +15,9 @@ import (
 )
 
 type ScanResult struct {
-	Host  string
-	Ports []int
+	Host        string
+	Ports       []int
+	TimeElapsed int
 }
 
 func scanHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,6 +36,8 @@ func scanHandler(w http.ResponseWriter, r *http.Request) {
 		timeout = 1000
 	}
 
+	timeStarted := time.Now()
+
 	options := runner.Options{
 		Host:     goflags.StringSlice{host},
 		ScanType: "s",
@@ -48,8 +52,9 @@ func scanHandler(w http.ResponseWriter, r *http.Request) {
 
 			// Convert the result to a JSON object
 			scanResult := ScanResult{
-				Host:  hr.Host,
-				Ports: portNumbers,
+				Host:        hr.Host,
+				Ports:       portNumbers,
+				TimeElapsed: int(time.Since(timeStarted).Milliseconds()),
 			}
 
 			jsonResult, err := json.Marshal(scanResult)
