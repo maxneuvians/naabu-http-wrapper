@@ -15,9 +15,9 @@ import (
 )
 
 type ScanResult struct {
-	Host        string
-	Ports       []int
-	TimeElapsed int
+	Host        string	`json:"host"`
+	Ports       []int 	`json:"ports"`
+	TimeElapsed int 	`json:"time_elapsed"`
 }
 
 func scanHandler(w http.ResponseWriter, r *http.Request) {

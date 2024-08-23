@@ -10,7 +10,7 @@ timeouts = Timeout in milliseconds (default: 1000)
 The webserver will run Naabu and return a JSON response that looks like this:
 
 ```
-{"Host":"scanme.sh","Ports":[80,443]}
+{"host":"scanme.sh","ports":[443,80],"time_elapsed":1239}
 ```
 
 ## Usage
