@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/naabu/v2/pkg/result"
@@ -18,14 +19,25 @@ type ScanResult struct {
 }
 
 func scanHandler(w http.ResponseWriter, r *http.Request) {
-
 	host := r.URL.Query().Get("host")
+
+	if host == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Host parameter is required"))
+		return
+	}
+
 	ports := r.URL.Query().Get("ports")
+	timeout, err := strconv.Atoi(r.URL.Query().Get("timeout"))
+
+	if err != nil {
+		timeout = 1000
+	}
 
 	options := runner.Options{
 		Host:     goflags.StringSlice{host},
 		ScanType: "s",
-		Timeout:  1000,
+		Timeout:  timeout,
 		OnResult: func(hr *result.HostResult) {
 
 			portNumbers := make([]int, 0)
@@ -72,6 +84,6 @@ func main() {
 		listenAddr = ":" + val
 	}
 	http.HandleFunc("/", scanHandler)
-	log.Printf("About to listen on %s. Go to https://127.0.0.1%s/", listenAddr, listenAddr)
+	log.Printf("About to listen on %s. Go to http://127.0.0.1%s/", listenAddr, listenAddr)
 	log.Fatal(http.ListenAndServe(listenAddr, nil))
 }
