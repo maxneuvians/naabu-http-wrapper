@@ -3,7 +3,7 @@ A simplistic HTTP wrapper around Naabu to allow it to be invoked through HTTP. Y
 
 ```
 host = Host to scan ex. scanme.sh (required)
-ports = Ports to scan ex. 80,443 or 1-1000 (optional)
+ports = Ports to scan ex. 80,443 or 1-1000 (optional, default: top100)
 timeouts = Timeout in milliseconds (default: 1000)
 ```
 
